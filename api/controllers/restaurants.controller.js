@@ -5,6 +5,9 @@ export default class RestaurantsController {
         const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 20) : 20;
         const page = req.query.page ? parseInt(req.query.page, 0) : 0;
 
+        if (page > 0)
+            page = page - 1;
+
         let filters = {};
         if (req.query.cuisine) {
             filters.cuisine = req.query.cuisine;
@@ -12,11 +15,11 @@ export default class RestaurantsController {
         else if (req.query.zipcode) {
             filters.zipcode = req.query.zipcode;
         }
-        else if(req.query.name) {
+        else if (req.query.name) {
             filters.name = req.query.name;
         }
 
-        const { restaurants, totalRestaurants } = await RestaurantsDAO.getRestaurants( { filters, page, restaurantsPerPage });
+        const { restaurants, totalRestaurants } = await RestaurantsDAO.getRestaurants({ filters, page, restaurantsPerPage });
 
         let response = {
             restaurants,
