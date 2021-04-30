@@ -3,7 +3,7 @@ import RestaurantsDAO from '../../dao/restaurants.dao.js';
 export default class RestaurantsController {
     static async apiGet(req, res, next) {
         const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 20) : 20;
-        const page = req.query.page ? parseInt(req.query.page, 0) : 0;
+        let page = req.query.page ? parseInt(req.query.page, 0) : 0;
 
         if (page > 0)
             page = page - 1;
