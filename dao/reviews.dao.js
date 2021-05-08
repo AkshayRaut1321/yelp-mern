@@ -9,7 +9,7 @@ export default class ReviewsDAO {
             return;
         }
         try {
-            reviews = await conn.db(process.env.RestaurantReviewsNS)
+            reviews = await conn.db(process.env.RestaurantNS)
                 .collection('reviews');
         }
         catch (error) {

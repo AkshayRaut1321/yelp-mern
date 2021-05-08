@@ -1,5 +1,7 @@
-let restaurants;
+import mongodb from 'mongodb';
 
+const ObjectId = mongodb.ObjectID;
+let restaurants;
 export default class RestaurantsDAO {
     static async injectDB(conn) {
         if (restaurants) {
@@ -49,9 +51,67 @@ export default class RestaurantsDAO {
             const totalRestaurants = restaurants.countDocuments(query);
             return { restaurants: restaurantsList, totalRestaurants };
         }
-        catch(error) {
+        catch (error) {
             console.error(`Unable to convert cursor to array: ${error}`);
             return { restaurants: [], totalRestaurants: 0 };
+        }
+    }
+
+    static async getByID(id) {
+
+        try {
+            const pipeline = [
+                {
+                    $match: {
+                        _id: new ObjectId(id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'reviews',
+                        let: {
+                            id: "$_id"
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ["$restaurantId", "$$id"],
+                                    }
+                                }
+                            },
+                            {
+                                $sort: {
+                                    date: -1
+                                }
+                            }
+                        ],
+                        as: "reviews"
+                    },
+                },
+                {
+                    $addFields: {
+                        reviews: "$reviews"
+                    }
+                }
+            ];
+            return await restaurants.aggregate(pipeline).next();
+        }
+        catch (error) {
+            console.error(`Unable to issue find command: ${error}`);
+            return { restaurants: [], totalRestaurants: 0 };
+        }
+    }
+
+    static async getCuisines() {
+        let cuisines = [];
+        try {
+            cuisines = await restaurants.distinct("cuisine");
+            return cuisines;
+        }
+        catch(error) {
+            console.error(`Unable to issue find command: ${error}`);
+            return cuisines;
         }
     }
 }
