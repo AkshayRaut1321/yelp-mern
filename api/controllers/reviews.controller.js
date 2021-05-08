@@ -27,7 +27,7 @@ export default class ReviewsController {
 
     static async apiUpdate(req, res, next) {
         try {
-            const reviewId = req.body.reviewId;
+            const reviewId = req.query.reviewId;
             const text = req.body.text;
             const date = new Date();
 
