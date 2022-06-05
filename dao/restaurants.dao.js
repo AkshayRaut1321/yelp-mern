@@ -48,7 +48,7 @@ export default class RestaurantsDAO {
 
         try {
             const restaurantsList = await displayCursor.toArray();
-            const totalRestaurants = restaurants.countDocuments(query);
+            const totalRestaurants = await restaurants.countDocuments(query);
             return { restaurants: restaurantsList, totalRestaurants };
         }
         catch (error) {

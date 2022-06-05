@@ -4,9 +4,10 @@ export default class RestaurantsController {
     static async apiGet(req, res, next) {
         const restaurantsPerPage = req.query.restaurantsPerPage ? parseInt(req.query.restaurantsPerPage, 20) : 20;
         let page = req.query.page ? parseInt(req.query.page, 0) : 0;
+        let indexPage = page;
 
-        if (page > 0)
-            page = page - 1;
+        if (indexPage > 0)
+            indexPage = indexPage - 1;
 
         let filters = {};
         if (req.query.cuisine) {
